@@ -13,10 +13,16 @@ namespace Pam.Data
 
         public DbSet<Usuario> TB_USUARIO { get; set; }
         public DbSet<Sugestao> TB_SUGESTAO { get; set; }
+        public DbSet<Requisicao> TB_REQUISICAO { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        {   
             modelBuilder.Entity<Usuario>().ToTable("TB_USUARIO");
+
+            modelBuilder.Entity<Requisicao>().ToTable("TB_REQUISICAO");
+
+//-----------------------------------------------------------------------------------------
 
             modelBuilder.Entity<Sugestao>().ToTable("TB_SUGESTAO");
 

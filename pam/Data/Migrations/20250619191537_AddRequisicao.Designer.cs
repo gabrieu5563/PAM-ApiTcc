@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pam.Data;
 
@@ -11,9 +12,11 @@ using Pam.Data;
 namespace pam.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250619191537_AddRequisicao")]
+    partial class AddRequisicao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -156,11 +159,13 @@ namespace pam.Data.Migrations
 
             modelBuilder.Entity("pam.Models.Requisicao", b =>
                 {
-                    b.HasOne("pam.Models.Usuario", null)
+                    b.HasOne("pam.Models.Usuario", "Usuario")
                         .WithMany("Requisicoes")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("pam.Models.Sugestao", b =>

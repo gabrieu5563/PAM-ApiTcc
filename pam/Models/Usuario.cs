@@ -9,6 +9,8 @@ namespace pam.Models
         public string Nome { get; set; } = string.Empty;
         public string Senha { get; set; } = string.Empty;
         public string Telefone { get; set; } = string.Empty;
+        public List<Requisicao> Requisicoes { get; set; } = new();
+
         
         [JsonIgnore]
         public ICollection<Sugestao> Sugestoes { get; set; } = new List<Sugestao>();
