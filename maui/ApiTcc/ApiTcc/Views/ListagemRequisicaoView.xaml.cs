@@ -11,4 +11,19 @@ public partial class ListagemRequisicaoView : ContentPage
     {
         await Shell.Current.GoToAsync("cadastroRequisicaoView");
     }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (BindingContext is ViewModels.ListagemRequisicaoViewModel vm)
+        {
+            _ = vm.LoadRequisicoes();
+        }
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+    }
 }

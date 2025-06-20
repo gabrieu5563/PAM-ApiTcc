@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Text;
 
 namespace ApiTcc.Services
@@ -10,13 +9,18 @@ namespace ApiTcc.Services
         public async Task<TResult> GetAsync<TResult>(string uri)
         {
             HttpClient client = new();
+
             HttpResponseMessage response = await client.GetAsync(uri);
             string serialized = await response.Content.ReadAsStringAsync();
 
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<TResult>(serialized);
+            }
+            else
+            {
                 throw new Exception(serialized);
-
-            return JsonConvert.DeserializeObject<TResult>(serialized);
+            }
         }
 
         public async Task<TResult> PostAsync<TResult>(string uri, TResult data)
@@ -27,7 +31,7 @@ namespace ApiTcc.Services
             HttpResponseMessage response = await client.PostAsync(uri, content);
             string serialized = await response.Content.ReadAsStringAsync();
 
-            if (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Created)
+            if (response.IsSuccessStatusCode)
             {
                 return JsonConvert.DeserializeObject<TResult>(serialized);
             }
@@ -36,7 +40,6 @@ namespace ApiTcc.Services
                 throw new Exception(serialized);
             }
         }
-
 
         public async Task<int> PutAsync<TResult>(string uri, TResult data)
         {
@@ -56,24 +59,17 @@ namespace ApiTcc.Services
             }
         }
 
-
         public async Task DeleteAsync(string uri)
         {
             HttpClient client = new();
 
             HttpResponseMessage response = await client.DeleteAsync(uri);
-
-            if (response.StatusCode == HttpStatusCode.NotFound)
-            {
-                throw new Exception("Requisição não encontrada.");
-            }
+            string serialized = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode)
             {
-                string serialized = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Erro: {response.StatusCode} - {serialized}");
+                throw new Exception($"Erro ao deletar: {response.StatusCode} - {serialized}");
             }
         }
-
     }
 }

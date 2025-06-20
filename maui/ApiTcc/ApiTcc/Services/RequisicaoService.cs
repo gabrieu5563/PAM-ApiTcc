@@ -13,7 +13,6 @@ namespace ApiTcc.Services
             return await PostAsync(apiUrlBase, requisicao);
         }
 
-
         public async Task<ObservableCollection<Requisicao>> GetRequisicoesAsync()
         {
             return await GetAsync<ObservableCollection<Requisicao>>(apiUrlBase);
@@ -27,7 +26,8 @@ namespace ApiTcc.Services
 
         public async Task<int> PutRequisicaoAsync(Requisicao requisicao)
         {
-            return await PutAsync(apiUrlBase, requisicao);
+            string url = $"{apiUrlBase}/{requisicao.Id}";
+            return await PutAsync(url, requisicao);
         }
 
         public async Task DeleteRequisicaoAsync(int id)

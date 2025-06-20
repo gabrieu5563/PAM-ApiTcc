@@ -1,57 +1,78 @@
 ﻿using ApiTcc.Models;
 using ApiTcc.Services;
-using System.Collections.ObjectModel;
+using Microsoft.Maui.Controls;
 using MvvmHelpers;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
-namespace ApiTcc.ViewModels;
-
-public class ListagemRequisicaoViewModel : BaseViewModel
+namespace ApiTcc.ViewModels
 {
-    public ObservableCollection<Models.Requisicao> Requisicoes { get; set; }
-    public ICommand BuscarCommand { get; }
-    public ICommand RemoverCommand { get; }
-    public ICommand EditarCommand { get; }
-
-    private RequisicaoService _service;
-
-    public ListagemRequisicaoViewModel()
+    public class ListagemRequisicaoViewModel : BaseViewModel
     {
-        _service = new RequisicaoService();
-        BuscarCommand = new Command(async () => await Buscar());
-        RemoverCommand = new Command<int>(async (id) => await Remover(id));
-        EditarCommand = new Command<int>(async (id) => await Editar(id));
-        _ = Buscar();
-    }
+        private readonly RequisicaoService _service;
 
-    private async Task Buscar()
-    {
-        Requisicoes = await _service.GetRequisicoesAsync();
-        OnPropertyChanged(nameof(Requisicoes));
-    }
+        public ObservableCollection<Requisicao> Requisicoes { get; set; }
 
-    private async Task Remover(int id)
-    {
-        await _service.DeleteRequisicaoAsync(id);
-        await Buscar();
-    }
+        public ICommand RemoverCommand { get; }
+        public ICommand EditarCommand { get; }
 
-    private async Task Editar(int id)
-    {
-        var requisicao = await _service.GetRequisicaoAsync(id);
-
-        if (requisicao != null)
+        public ListagemRequisicaoViewModel()
         {
-            // Monta a URL passando os parâmetros por query
-            var parametros = new Dictionary<string, object>
-        {
-            { "Id", requisicao.Id },
-            { "Prompt", requisicao.Prompt },
-            { "UsuarioId", requisicao.UsuarioId }
-        };
+            _service = new RequisicaoService();
+            Requisicoes = new ObservableCollection<Requisicao>();
 
-            await Shell.Current.GoToAsync($"cadastroRequisicaoView", parametros);
+            RemoverCommand = new Command<int>(async (id) => await Remover(id));
+            EditarCommand = new Command<int>(async (id) => await Editar(id));
+
+            MessagingCenter.Subscribe<CadastroRequisicaoViewModel>(this, "AtualizarRequisicoes", async (sender) =>
+            {
+                await LoadRequisicoes();
+            });
+
+            _ = LoadRequisicoes();
+        }
+
+
+        public async Task LoadRequisicoes()
+        {
+            var lista = await _service.GetRequisicoesAsync();
+            Requisicoes.Clear();
+
+            foreach (var item in lista)
+                Requisicoes.Add(item);
+        }
+
+        private async Task Remover(int id)
+        {
+            bool confirm = await Shell.Current.DisplayAlert("Confirmação", "Deseja excluir essa requisição?", "Sim", "Não");
+            if (!confirm) return;
+
+            try
+            {
+                await _service.DeleteRequisicaoAsync(id);
+                await LoadRequisicoes();
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Erro", ex.Message, "OK");
+            }
+        }
+
+        private async Task Editar(int id)
+        {
+            var requisicao = await _service.GetRequisicaoAsync(id);
+
+            if (requisicao != null)
+            {
+                var parametros = new Dictionary<string, object>
+                {
+                    { "Id", requisicao.Id },
+                    { "Prompt", requisicao.Prompt },
+                    { "UsuarioId", requisicao.UsuarioId }
+                };
+
+                await Shell.Current.GoToAsync($"cadastroRequisicaoView", parametros);
+            }
         }
     }
-
 }

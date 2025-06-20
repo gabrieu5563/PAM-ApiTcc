@@ -1,5 +1,6 @@
 ﻿using ApiTcc.Models;
 using ApiTcc.Services;
+using Microsoft.Maui.Controls;
 using MvvmHelpers;
 using System.Windows.Input;
 
@@ -23,20 +24,31 @@ namespace ApiTcc.ViewModels
 
         private async Task Salvar()
         {
-            var requisicao = new Models.Requisicao
+            try
             {
-                Id = Id,
-                Prompt = Prompt,
-                UsuarioId = UsuarioId,
-                CriadoEm = DateTime.Now
-            };
+                var requisicao = new Requisicao
+                {
+                    Id = Id,
+                    Prompt = Prompt,
+                    UsuarioId = UsuarioId,
+                    CriadoEm = DateTime.Now
+                };
 
-            if (Id == 0)
-                await _service.PostRequisicaoAsync(requisicao);
-            else
-                await _service.PutRequisicaoAsync(requisicao);
+                if (Id == 0)
+                    await _service.PostRequisicaoAsync(requisicao);
+                else
+                    await _service.PutRequisicaoAsync(requisicao);
 
-            await Shell.Current.GoToAsync("..");
+                // 🔥 Envia mensagem para atualizar a lista
+                MessagingCenter.Send(this, "AtualizarRequisicoes");
+
+                await Shell.Current.GoToAsync("..");
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Erro", ex.Message, "OK");
+            }
         }
+
     }
 }
