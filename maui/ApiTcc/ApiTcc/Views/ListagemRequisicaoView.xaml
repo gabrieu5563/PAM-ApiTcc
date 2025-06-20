@@ -1,0 +1,50 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ApiTcc.ViewModels"
+             x:Class="ApiTcc.Views.ListagemRequisicaoView">
+
+    <ContentPage.BindingContext>
+        <vm:ListagemRequisicaoViewModel/>
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="10">
+            <Button Text="Cadastrar Nova Requisição"
+                    Clicked="OnCadastrarClicked"/>
+
+            <CollectionView x:Name="listaRequisicao" ItemsSource="{Binding Requisicoes}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BorderColor="Gray" Padding="10" Margin="5">
+                            <VerticalStackLayout Spacing="5">
+                                <Label Text="Prompt:" FontAttributes="Bold"/>
+                                <Label Text="{Binding Prompt}"/>
+
+                                <Label Text="Criado Em:" FontAttributes="Bold"/>
+                                <Label Text="{Binding CriadoEm}"/>
+
+                                <Label Text="Usuario Id:" FontAttributes="Bold"/>
+                                <Label Text="{Binding UsuarioId}"/>
+
+                                <HorizontalStackLayout Spacing="10">
+                                    <Button Text="Excluir"
+                                            BackgroundColor="Red"
+                                            TextColor="White"
+                                            Command="{Binding BindingContext.RemoverCommand, Source={x:Reference listaRequisicao}}"
+                                            CommandParameter="{Binding Id}"/>
+
+                                    <Button Text="Atualizar"
+                                            BackgroundColor="Orange"
+                                            TextColor="White"
+                                            Command="{Binding BindingContext.EditarCommand, Source={x:Reference listaRequisicao}}"
+                                            CommandParameter="{Binding Id}"/>
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

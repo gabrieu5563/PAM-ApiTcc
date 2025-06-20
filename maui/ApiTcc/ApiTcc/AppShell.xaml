@@ -1,0 +1,10 @@
+<Shell
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:ApiTcc"
+    xmlns:views="clr-namespace:ApiTcc.Views"
+    x:Class="ApiTcc.AppShell">
+
+    <ShellContent Title="Menu" 
+                  ContentTemplate="{DataTemplate local:MainPage}" />
+</Shell>

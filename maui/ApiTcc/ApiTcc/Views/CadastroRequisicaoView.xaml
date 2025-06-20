@@ -1,0 +1,19 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ApiTcc.ViewModels"
+             x:Class="ApiTcc.Views.CadastroRequisicaoView">
+
+    <ContentPage.BindingContext>
+        <vm:CadastroRequisicaoViewModel/>
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Padding="20">
+        <Label Text="Prompt"/>
+        <Entry Text="{Binding Prompt}"/>
+
+        <Label Text="Usuario Id"/>
+        <Entry Text="{Binding UsuarioId}" Keyboard="Numeric"/>
+
+        <Button Text="Salvar" Command="{Binding SalvarCommand}"/>
+    </VerticalStackLayout>
+</ContentPage>
