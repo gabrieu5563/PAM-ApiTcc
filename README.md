@@ -1,4 +1,6 @@
 # PAM-ApiTcc
+Feito por Gabriel Joaquim e João Victor
+<br>
 Repositório para mapeamento e CRUD da classe Requisição do tcc
 <br>
 <br>
